@@ -12,7 +12,6 @@ export function PartySelector({ currentLetter, onSelect }: PartySelectorProps) {
 
   const parties = Object.entries(meta.parties)
     .filter(([, p]) => {
-      // Only show parties that had seats in at least one round
       return Object.values(p.seats).some(s => s > 0)
     })
     .sort((a, b) => {
@@ -26,7 +25,7 @@ export function PartySelector({ currentLetter, onSelect }: PartySelectorProps) {
       value={currentLetter || ''}
       onChange={e => onSelect(e.target.value)}
       className={cn(
-        'px-3 py-1.5 rounded-md border border-input bg-background text-sm',
+        'px-3 py-1.5 rounded-lg border border-input bg-secondary/50 text-sm',
         'focus:outline-none focus:ring-2 focus:ring-ring'
       )}
     >

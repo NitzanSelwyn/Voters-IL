@@ -14,11 +14,14 @@ export function PartyBadge({ letter, className, showLetter = false }: PartyBadge
 
   return (
     <span
-      className={cn('inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-sm font-medium text-white', className)}
+      className={cn(
+        'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-sm font-medium text-white shadow-sm',
+        className
+      )}
       style={{ backgroundColor: party.color }}
     >
       {party.nameHe}
-      {showLetter && <span className="text-xs opacity-75">({letter})</span>}
+      {showLetter && <span className="text-xs opacity-80">({letter})</span>}
     </span>
   )
 }

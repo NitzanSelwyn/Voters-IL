@@ -25,19 +25,22 @@ export function SearchBar() {
   return (
     <div ref={ref} className="relative">
       <div className="relative">
-        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
         <input
           type="text"
           value={query}
           onChange={e => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           placeholder="חיפוש יישוב..."
-          className="w-full ps-9 pe-3 py-1.5 rounded-md border border-input bg-background text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="w-full ps-9 pe-3 py-1.5 rounded-lg border border-input bg-secondary/50 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background transition-colors"
         />
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute top-full mt-1 w-full bg-popover border border-border rounded-md shadow-lg z-50 max-h-64 overflow-auto">
+        <div
+          className="absolute top-full mt-1.5 w-full bg-popover border border-border rounded-xl overflow-hidden z-50 max-h-72 overflow-auto animate-fade-in"
+          style={{ boxShadow: 'var(--shadow-dropdown)' }}
+        >
           {results.map(r => (
             <button
               key={r.item.code}
@@ -47,13 +50,13 @@ export function SearchBar() {
                 setOpen(false)
               }}
               className={cn(
-                'w-full text-start px-3 py-2 text-sm hover:bg-accent transition-colors',
-                'focus:bg-accent focus:outline-none'
+                'w-full text-start px-3 py-2.5 text-sm hover:bg-accent transition-colors',
+                'focus:bg-accent focus:outline-none border-b border-border/50 last:border-0'
               )}
             >
-              {r.item.name}
+              <span className="font-medium">{r.item.name}</span>
               {r.item.district && (
-                <span className="text-muted-foreground me-2"> - {r.item.district}</span>
+                <span className="text-muted-foreground me-2 text-xs"> - {r.item.district}</span>
               )}
             </button>
           ))}

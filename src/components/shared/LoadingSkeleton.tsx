@@ -6,25 +6,25 @@ interface LoadingSkeletonProps {
 
 export function LoadingSkeleton({ className }: LoadingSkeletonProps) {
   return (
-    <div className={cn('animate-pulse rounded-lg bg-muted', className)} />
+    <div className={cn('animate-pulse rounded-lg bg-muted/70', className)} />
   )
 }
 
 export function ChartSkeleton() {
   return (
-    <div className="space-y-3">
-      <LoadingSkeleton className="h-6 w-48" />
-      <LoadingSkeleton className="h-64 w-full" />
+    <div className="card-base space-y-4">
+      <LoadingSkeleton className="h-5 w-40" />
+      <LoadingSkeleton className="h-64 w-full rounded-lg" />
     </div>
   )
 }
 
 export function CardSkeleton() {
   return (
-    <div className="rounded-xl border border-border p-4 space-y-2">
-      <LoadingSkeleton className="h-4 w-24" />
-      <LoadingSkeleton className="h-8 w-32" />
+    <div className="card-base space-y-3">
       <LoadingSkeleton className="h-3 w-20" />
+      <LoadingSkeleton className="h-7 w-28" />
+      <LoadingSkeleton className="h-3 w-16" />
     </div>
   )
 }

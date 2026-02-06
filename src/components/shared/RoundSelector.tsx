@@ -12,16 +12,16 @@ export function RoundSelector({ selected, onChange, className }: RoundSelectorPr
   if (!meta) return null
 
   return (
-    <div className={cn('flex items-center gap-1 flex-wrap', className)}>
+    <div className={cn('flex flex-wrap items-center gap-1 rounded-lg bg-secondary/70 p-1', className)}>
       {meta.rounds.map(round => (
         <button
           key={round.id}
           onClick={() => onChange(round.id)}
           className={cn(
-            'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
+            'px-2.5 py-1 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
             selected === round.id
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-secondary text-secondary-foreground hover:bg-accent'
+              ? 'bg-primary text-primary-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
           )}
         >
           כ-{round.id}

@@ -1,5 +1,6 @@
 import { ResponsiveLine } from '@nivo/line'
 import { useThemeContext } from '@/components/layout/ThemeProvider'
+import { getChartTheme } from '@/lib/chartTheme'
 
 interface TurnoutTrendProps {
   data: { roundId: number; turnout: number }[]
@@ -7,7 +8,7 @@ interface TurnoutTrendProps {
 
 export function TurnoutTrend({ data }: TurnoutTrendProps) {
   const { resolved } = useThemeContext()
-  const textColor = resolved === 'dark' ? '#fafafa' : '#0a0a0a'
+  const { theme } = getChartTheme(resolved)
 
   const chartData = [{
     id: 'אחוז הצבעה',
@@ -22,7 +23,7 @@ export function TurnoutTrend({ data }: TurnoutTrendProps) {
         xScale={{ type: 'point' }}
         yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
         curve="monotoneX"
-        colors={['#1b5da5']}
+        colors={[resolved === 'dark' ? '#4b8ede' : '#1a4f8b']}
         lineWidth={3}
         pointSize={10}
         pointColor={{ theme: 'background' }}
@@ -34,16 +35,10 @@ export function TurnoutTrend({ data }: TurnoutTrendProps) {
           legendPosition: 'middle',
           legendOffset: -40,
         }}
-        theme={{
-          text: { fill: textColor, fontFamily: 'Noto Sans Hebrew' },
-          axis: { ticks: { text: { fill: textColor } }, legend: { text: { fill: textColor } } },
-          grid: { line: { stroke: resolved === 'dark' ? '#333' : '#e5e5e5' } },
-          crosshair: { line: { stroke: textColor, strokeOpacity: 0.3 } },
-          tooltip: { container: { background: resolved === 'dark' ? '#1a1a1a' : '#fff', color: textColor } },
-        }}
+        theme={theme}
         useMesh
         tooltip={({ point }) => (
-          <div className="bg-popover text-popover-foreground p-2 rounded-md shadow border border-border text-sm" dir="rtl">
+          <div className="bg-popover text-popover-foreground p-2 rounded-lg text-sm" dir="rtl">
             <strong>{point.data.x as string}</strong>: {point.data.yFormatted}%
           </div>
         )}

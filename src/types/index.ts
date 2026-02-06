@@ -11,20 +11,33 @@ export interface PartyMeta {
   nameEn: string
   color: string
   seats: Record<number, number>
+  aliasRounds?: Record<number, { nameHe: string; nameEn: string }>
 }
 
 export interface CityMeta {
   code: string
   name: string
+  aliases?: string[]
   district?: string
   lat?: number
   lng?: number
+}
+
+export interface DataCompleteness {
+  hasPerCityData: boolean
+  hasPerBallotBoxData: boolean
+  hasEligibleVoters: boolean
+  hasCityCodes: boolean
+  hasInvalidVotes: boolean
+  dataSource: string
+  notes?: string
 }
 
 export interface MetaData {
   rounds: RoundMeta[]
   parties: Record<string, PartyMeta>
   cities: CityMeta[]
+  dataCompleteness: Record<number, DataCompleteness>
 }
 
 export interface CityRoundData {

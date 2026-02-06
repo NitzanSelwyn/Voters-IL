@@ -3,16 +3,20 @@ import { useNavigate } from 'react-router-dom'
 import { useMetaData } from '@/data/hooks'
 import { useThemeContext } from '@/components/layout/ThemeProvider'
 import { formatNumber } from '@/components/shared/NumberDisplay'
+import { getChartTheme } from '@/lib/chartTheme'
+import { getPartyName } from '@/lib/utils'
 
 interface VoteSharePieProps {
   partyTotals: Record<string, number>
   totalValid: number
+  roundId?: number
 }
 
-export function VoteSharePie({ partyTotals, totalValid }: VoteSharePieProps) {
+export function VoteSharePie({ partyTotals, totalValid, roundId }: VoteSharePieProps) {
   const { meta } = useMetaData()
   const { resolved } = useThemeContext()
   const navigate = useNavigate()
+  const { textColor } = getChartTheme(resolved)
   if (!meta) return null
 
   const threshold = totalValid * 0.02
@@ -23,7 +27,7 @@ export function VoteSharePie({ partyTotals, totalValid }: VoteSharePieProps) {
     if (votes >= threshold && meta.parties[letter]) {
       mainParties.push({
         id: letter,
-        label: meta.parties[letter].nameHe,
+        label: getPartyName(meta.parties[letter], roundId),
         value: votes,
         color: meta.parties[letter].color,
       })
@@ -39,11 +43,9 @@ export function VoteSharePie({ partyTotals, totalValid }: VoteSharePieProps) {
       id: 'others',
       label: 'אחרות',
       value: othersVotes,
-      color: '#9ca3af',
+      color: '#94a3b8',
     })
   }
-
-  const textColor = resolved === 'dark' ? '#fafafa' : '#0a0a0a'
 
   return (
     <div style={{ direction: 'ltr' }} className="h-[350px]">
@@ -68,11 +70,22 @@ export function VoteSharePie({ partyTotals, totalValid }: VoteSharePieProps) {
           }
         }}
         theme={{
-          text: { fontFamily: 'Noto Sans Hebrew' },
-          tooltip: { container: { background: resolved === 'dark' ? '#1a1a1a' : '#fff', color: textColor } },
+          text: { fontFamily: 'Noto Sans Hebrew', fontSize: 12 },
+          tooltip: {
+            container: {
+              background: resolved === 'dark' ? '#162032' : '#ffffff',
+              color: textColor,
+              borderRadius: '8px',
+              boxShadow: resolved === 'dark'
+                ? '0 8px 24px rgba(0,0,0,0.3)'
+                : '0 8px 24px rgba(15,23,42,0.1)',
+              border: `1px solid ${resolved === 'dark' ? '#1e3050' : '#e2e8f0'}`,
+              padding: '8px 12px',
+            },
+          },
         }}
         tooltip={({ datum }) => (
-          <div className="bg-popover text-popover-foreground p-2 rounded-md shadow border border-border text-sm" dir="rtl">
+          <div className="text-sm" dir="rtl">
             <strong>{datum.label}</strong>
             <br />
             {formatNumber(datum.value)} קולות ({((datum.value / totalValid) * 100).toFixed(1)}%)

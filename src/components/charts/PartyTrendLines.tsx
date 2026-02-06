@@ -1,6 +1,7 @@
 import { ResponsiveLine } from '@nivo/line'
 import { useThemeContext } from '@/components/layout/ThemeProvider'
 import { useMetaData } from '@/data/hooks'
+import { getChartTheme } from '@/lib/chartTheme'
 
 interface PartyTrendData {
   letter: string
@@ -14,7 +15,7 @@ interface PartyTrendLinesProps {
 export function PartyTrendLines({ trends }: PartyTrendLinesProps) {
   const { resolved } = useThemeContext()
   const { meta } = useMetaData()
-  const textColor = resolved === 'dark' ? '#fafafa' : '#0a0a0a'
+  const { textColor, theme } = getChartTheme(resolved)
 
   const chartData = trends.map(t => ({
     id: meta?.parties[t.letter]?.nameHe || t.letter,
@@ -52,12 +53,7 @@ export function PartyTrendLines({ trends }: PartyTrendLinesProps) {
           legendPosition: 'middle',
           legendOffset: -40,
         }}
-        theme={{
-          text: { fill: textColor, fontFamily: 'Noto Sans Hebrew' },
-          axis: { ticks: { text: { fill: textColor } }, legend: { text: { fill: textColor } } },
-          grid: { line: { stroke: resolved === 'dark' ? '#333' : '#e5e5e5' } },
-          tooltip: { container: { background: resolved === 'dark' ? '#1a1a1a' : '#fff', color: textColor } },
-        }}
+        theme={theme}
         useMesh
       />
     </div>

@@ -1,5 +1,6 @@
 import { ResponsiveBar } from '@nivo/bar'
 import { useThemeContext } from '@/components/layout/ThemeProvider'
+import { getChartTheme } from '@/lib/chartTheme'
 
 interface TurnoutCompareBarProps {
   data: { round: string; city: number; national: number }[]
@@ -7,7 +8,7 @@ interface TurnoutCompareBarProps {
 
 export function TurnoutCompareBar({ data }: TurnoutCompareBarProps) {
   const { resolved } = useThemeContext()
-  const textColor = resolved === 'dark' ? '#fafafa' : '#0a0a0a'
+  const { textColor, theme } = getChartTheme(resolved)
 
   return (
     <div style={{ direction: 'ltr' }} className="h-[300px]">
@@ -18,7 +19,7 @@ export function TurnoutCompareBar({ data }: TurnoutCompareBarProps) {
         groupMode="grouped"
         margin={{ top: 10, right: 20, bottom: 40, left: 50 }}
         padding={0.3}
-        colors={['#1b5da5', '#9ca3af']}
+        colors={[resolved === 'dark' ? '#4b8ede' : '#1a4f8b', '#94a3b8']}
         borderRadius={4}
         axisLeft={{
           legend: '% הצבעה',
@@ -35,16 +36,11 @@ export function TurnoutCompareBar({ data }: TurnoutCompareBarProps) {
           itemTextColor: textColor,
           symbolSize: 10,
           data: [
-            { id: 'city', label: 'יישוב', color: '#1b5da5' },
-            { id: 'national', label: 'ארצי', color: '#9ca3af' },
+            { id: 'city', label: 'יישוב', color: resolved === 'dark' ? '#4b8ede' : '#1a4f8b' },
+            { id: 'national', label: 'ארצי', color: '#94a3b8' },
           ],
         }]}
-        theme={{
-          text: { fill: textColor, fontFamily: 'Noto Sans Hebrew' },
-          axis: { ticks: { text: { fill: textColor } }, legend: { text: { fill: textColor } } },
-          grid: { line: { stroke: resolved === 'dark' ? '#333' : '#e5e5e5' } },
-          tooltip: { container: { background: resolved === 'dark' ? '#1a1a1a' : '#fff', color: textColor } },
-        }}
+        theme={theme}
       />
     </div>
   )

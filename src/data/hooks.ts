@@ -129,7 +129,7 @@ export function useFuseSearch(cities: CityMeta[]) {
   return useMemo(() => {
     if (!cities.length) return null
     return new Fuse(cities, {
-      keys: ['name'],
+      keys: ['name', 'aliases'],
       threshold: 0.3,
       distance: 100,
     })

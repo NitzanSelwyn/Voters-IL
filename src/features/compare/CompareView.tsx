@@ -3,7 +3,9 @@ import { useMetaData } from '@/data/hooks'
 import { loadRoundData } from '@/data/loader'
 import { VoteShiftBar } from '@/components/charts/VoteShiftBar'
 import { StatCard } from '@/components/shared/StatCard'
+import { DataWarningBanner } from '@/components/shared/DataWarningBanner'
 import { ChartSkeleton, CardSkeleton } from '@/components/shared/LoadingSkeleton'
+import { getPartyName } from '@/lib/utils'
 import type { RoundData, NationalAggregates } from '@/types'
 
 function computeAgg(rd: RoundData): NationalAggregates {
@@ -34,7 +36,6 @@ export default function CompareView() {
   const fromAgg = useMemo(() => fromData ? computeAgg(fromData) : null, [fromData])
   const toAgg = useMemo(() => toData ? computeAgg(toData) : null, [toData])
 
-  // Vote shifts
   const shifts = useMemo(() => {
     if (!fromAgg || !toAgg) return []
     const allLetters = new Set([...Object.keys(fromAgg.partyTotals), ...Object.keys(toAgg.partyTotals)])
@@ -47,7 +48,6 @@ export default function CompareView() {
       .slice(0, 15)
   }, [fromAgg, toAgg])
 
-  // New and gone parties
   const { newParties, goneParties } = useMemo(() => {
     if (!fromAgg || !toAgg || !meta) return { newParties: [] as string[], goneParties: [] as string[] }
     const fromLetters = new Set(Object.keys(fromAgg.partyTotals).filter(l => fromAgg.partyTotals[l] > 0))
@@ -58,7 +58,6 @@ export default function CompareView() {
     }
   }, [fromAgg, toAgg, meta])
 
-  // Biggest city swing
   const biggestSwing = useMemo(() => {
     if (!fromData || !toData) return null
     let maxSwing = 0
@@ -77,28 +76,38 @@ export default function CompareView() {
   if (metaLoading) return <ChartSkeleton />
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-2xl font-bold">השוואת סבבים</h1>
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm text-muted-foreground">מ:</span>
-          <select
-            value={fromRound}
-            onChange={e => setFromRound(Number(e.target.value))}
-            className="px-3 py-1.5 rounded-md border border-input bg-background text-sm"
-          >
-            {meta?.rounds.map(r => <option key={r.id} value={r.id}>כ-{r.id}</option>)}
-          </select>
-          <span className="text-sm text-muted-foreground">אל:</span>
-          <select
-            value={toRound}
-            onChange={e => setToRound(Number(e.target.value))}
-            className="px-3 py-1.5 rounded-md border border-input bg-background text-sm"
-          >
-            {meta?.rounds.map(r => <option key={r.id} value={r.id}>כ-{r.id}</option>)}
-          </select>
+        <div>
+          <h1 className="page-title">השוואת סבבים</h1>
+          <p className="text-sm text-muted-foreground mt-1">השוואה בין סבבי בחירות</p>
+        </div>
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">מ:</span>
+            <select
+              value={fromRound}
+              onChange={e => setFromRound(Number(e.target.value))}
+              className="px-3 py-1.5 rounded-lg border border-input bg-secondary/50 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {meta?.rounds.map(r => <option key={r.id} value={r.id}>כ-{r.id}</option>)}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">אל:</span>
+            <select
+              value={toRound}
+              onChange={e => setToRound(Number(e.target.value))}
+              className="px-3 py-1.5 rounded-lg border border-input bg-secondary/50 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {meta?.rounds.map(r => <option key={r.id} value={r.id}>כ-{r.id}</option>)}
+            </select>
+          </div>
         </div>
       </div>
+
+      <DataWarningBanner roundId={fromRound} />
+      <DataWarningBanner roundId={toRound} />
 
       {loading || !fromAgg || !toAgg ? (
         <div className="space-y-4">
@@ -112,38 +121,40 @@ export default function CompareView() {
               title="שינוי אחוז הצבעה"
               value={toAgg.turnoutPercent - fromAgg.turnoutPercent}
               type="percent"
+              className="animate-fade-in-up stagger-1"
             />
             {biggestSwing && (
               <StatCard
                 title="שינוי הצבעה גדול ביותר"
                 value={biggestSwing.swing}
                 type="percent"
+                className="animate-fade-in-up stagger-2"
               />
             )}
-            <div className="rounded-xl border border-border bg-card p-4">
-              <span className="text-sm text-muted-foreground">מפלגות חדשות</span>
-              <div className="mt-1 flex flex-wrap gap-1">
+            <div className="card-base animate-fade-in-up stagger-3">
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">מפלגות חדשות</span>
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {newParties.length > 0 ? newParties.map(l => (
-                  <span key={l} className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                    {meta?.parties[l]?.nameHe || l}
+                  <span key={l} className="text-xs px-2.5 py-0.5 rounded-full bg-success-light text-success font-medium">
+                    {meta?.parties[l] ? getPartyName(meta.parties[l], toRound) : l}
                   </span>
                 )) : <span className="text-sm text-muted-foreground">אין</span>}
               </div>
             </div>
-            <div className="rounded-xl border border-border bg-card p-4">
-              <span className="text-sm text-muted-foreground">מפלגות שנעלמו</span>
-              <div className="mt-1 flex flex-wrap gap-1">
+            <div className="card-base animate-fade-in-up stagger-4">
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">מפלגות שנעלמו</span>
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {goneParties.length > 0 ? goneParties.map(l => (
-                  <span key={l} className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                    {meta?.parties[l]?.nameHe || l}
+                  <span key={l} className="text-xs px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-medium">
+                    {meta?.parties[l] ? getPartyName(meta.parties[l], fromRound) : l}
                   </span>
                 )) : <span className="text-sm text-muted-foreground">אין</span>}
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4">
-            <h2 className="text-lg font-semibold mb-2">שינוי בתמיכה (% קולות)</h2>
+          <div className="card-base">
+            <h2 className="section-title mb-3">שינוי בתמיכה (% קולות)</h2>
             <VoteShiftBar shifts={shifts} />
           </div>
         </>

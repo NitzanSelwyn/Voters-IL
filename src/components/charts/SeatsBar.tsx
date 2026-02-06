@@ -1,6 +1,8 @@
 import { ResponsiveBar } from '@nivo/bar'
 import { useMetaData } from '@/data/hooks'
 import { useThemeContext } from '@/components/layout/ThemeProvider'
+import { getChartTheme } from '@/lib/chartTheme'
+import { getPartyName, formatCompactNumber } from '@/lib/utils'
 
 interface SeatsBarProps {
   partyTotals: Record<string, number>
@@ -12,18 +14,18 @@ export function SeatsBar({ partyTotals, roundId }: SeatsBarProps) {
   const { resolved } = useThemeContext()
   if (!meta) return null
 
+  const { textColor, theme } = getChartTheme(resolved)
+
   const data = Object.entries(meta.parties)
     .filter(([letter]) => meta.parties[letter].seats[roundId] > 0)
     .map(([letter, party]) => ({
-      party: party.nameHe,
+      party: getPartyName(party, roundId),
       seats: party.seats[roundId] || 0,
       color: party.color,
       letter,
       votes: partyTotals[letter] || 0,
     }))
     .sort((a, b) => b.seats - a.seats)
-
-  const textColor = resolved === 'dark' ? '#fafafa' : '#0a0a0a'
 
   return (
     <div style={{ direction: 'ltr' }} className="h-[400px]">
@@ -47,19 +49,19 @@ export function SeatsBar({ partyTotals, roundId }: SeatsBarProps) {
         }}
         labelSkipWidth={20}
         labelTextColor="#ffffff"
-        theme={{
-          text: { fill: textColor, fontFamily: 'Noto Sans Hebrew' },
-          axis: { ticks: { text: { fill: textColor } }, legend: { text: { fill: textColor } } },
-          grid: { line: { stroke: resolved === 'dark' ? '#333' : '#e5e5e5' } },
-          tooltip: { container: { background: resolved === 'dark' ? '#1a1a1a' : '#fff', color: textColor } },
+        theme={theme}
+        tooltip={({ data }) => {
+          const d = data as Record<string, unknown>
+          return (
+            <div className="bg-popover text-popover-foreground p-2 rounded-lg text-sm" style={{ color: textColor }} dir="rtl">
+              <strong>{d.party as string}</strong>
+              <br />
+              מנדטים: {d.seats as number}
+              <br />
+              קולות: {formatCompactNumber(d.votes as number)}
+            </div>
+          )
         }}
-        tooltip={({ data }) => (
-          <div className="bg-popover text-popover-foreground p-2 rounded-md shadow border border-border text-sm" dir="rtl">
-            <strong>{(data as Record<string, unknown>).party as string}</strong>
-            <br />
-            מנדטים: {(data as Record<string, unknown>).seats as number}
-          </div>
-        )}
       />
     </div>
   )

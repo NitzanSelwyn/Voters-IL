@@ -1,6 +1,7 @@
 import { ResponsiveBar } from '@nivo/bar'
 import { useMetaData } from '@/data/hooks'
 import { useThemeContext } from '@/components/layout/ThemeProvider'
+import { getChartTheme } from '@/lib/chartTheme'
 
 interface VoteShiftBarProps {
   shifts: { letter: string; change: number }[]
@@ -9,7 +10,7 @@ interface VoteShiftBarProps {
 export function VoteShiftBar({ shifts }: VoteShiftBarProps) {
   const { meta } = useMetaData()
   const { resolved } = useThemeContext()
-  const textColor = resolved === 'dark' ? '#fafafa' : '#0a0a0a'
+  const { textColor, theme } = getChartTheme(resolved)
   if (!meta) return null
 
   const data = shifts
@@ -17,7 +18,7 @@ export function VoteShiftBar({ shifts }: VoteShiftBarProps) {
     .map(s => ({
       party: meta.parties[s.letter]?.nameHe || s.letter,
       change: Number(s.change.toFixed(2)),
-      color: s.change >= 0 ? '#22c55e' : '#ef4444',
+      color: s.change >= 0 ? '#16a34a' : '#dc2626',
     }))
 
   return (
@@ -42,14 +43,9 @@ export function VoteShiftBar({ shifts }: VoteShiftBarProps) {
         markers={[{
           axis: 'x',
           value: 0,
-          lineStyle: { stroke: textColor, strokeWidth: 1 },
+          lineStyle: { stroke: textColor, strokeWidth: 1, strokeOpacity: 0.3 },
         }]}
-        theme={{
-          text: { fill: textColor, fontFamily: 'Noto Sans Hebrew' },
-          axis: { ticks: { text: { fill: textColor } }, legend: { text: { fill: textColor } } },
-          grid: { line: { stroke: resolved === 'dark' ? '#333' : '#e5e5e5' } },
-          tooltip: { container: { background: resolved === 'dark' ? '#1a1a1a' : '#fff', color: textColor } },
-        }}
+        theme={theme}
       />
     </div>
   )

@@ -1,6 +1,7 @@
 import { ResponsiveBump } from '@nivo/bump'
 import { useThemeContext } from '@/components/layout/ThemeProvider'
 import { useMetaData } from '@/data/hooks'
+import { getChartTheme } from '@/lib/chartTheme'
 import type { NationalAggregates } from '@/types'
 
 interface BumpRankingProps {
@@ -11,12 +12,11 @@ interface BumpRankingProps {
 export function BumpRanking({ aggregates, topN = 12 }: BumpRankingProps) {
   const { resolved } = useThemeContext()
   const { meta } = useMetaData()
-  const textColor = resolved === 'dark' ? '#fafafa' : '#0a0a0a'
+  const { textColor, theme } = getChartTheme(resolved)
   if (!meta) return null
 
   const roundIds = [...aggregates.keys()].sort()
 
-  // Find top N parties across all rounds
   const partyMaxVotes = new Map<string, number>()
   for (const agg of aggregates.values()) {
     for (const [letter, votes] of Object.entries(agg.partyTotals)) {
@@ -61,9 +61,8 @@ export function BumpRanking({ aggregates, topN = 12 }: BumpRankingProps) {
           legendOffset: -30,
         }}
         theme={{
-          text: { fill: textColor, fontFamily: 'Noto Sans Hebrew' },
-          axis: { ticks: { text: { fill: textColor } }, legend: { text: { fill: textColor } } },
-          tooltip: { container: { background: resolved === 'dark' ? '#1a1a1a' : '#fff', color: textColor } },
+          ...theme,
+          tooltip: { container: { ...theme.tooltip.container, color: textColor } },
         }}
       />
     </div>

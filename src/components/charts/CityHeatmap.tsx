@@ -1,5 +1,6 @@
 import { ResponsiveHeatMap } from '@nivo/heatmap'
 import { useThemeContext } from '@/components/layout/ThemeProvider'
+import { getChartTheme } from '@/lib/chartTheme'
 
 interface CityHeatmapProps {
   data: { id: string; data: { x: string; y: number | null }[] }[]
@@ -7,7 +8,7 @@ interface CityHeatmapProps {
 
 export function CityHeatmap({ data }: CityHeatmapProps) {
   const { resolved } = useThemeContext()
-  const textColor = resolved === 'dark' ? '#fafafa' : '#0a0a0a'
+  const { theme } = getChartTheme(resolved)
 
   return (
     <div style={{ direction: 'ltr' }} className="h-[600px]">
@@ -28,17 +29,13 @@ export function CityHeatmap({ data }: CityHeatmapProps) {
           minValue: 0,
           maxValue: 50,
         }}
-        emptyColor={resolved === 'dark' ? '#333' : '#f5f5f5'}
+        emptyColor={resolved === 'dark' ? '#1e2d45' : '#f1f5f9'}
         borderWidth={1}
-        borderColor={resolved === 'dark' ? '#444' : '#ddd'}
+        borderColor={resolved === 'dark' ? '#1e3050' : '#e2e8f0'}
         labelTextColor={{ from: 'color', modifiers: [['darker', 3]] }}
-        theme={{
-          text: { fill: textColor, fontFamily: 'Noto Sans Hebrew' },
-          axis: { ticks: { text: { fill: textColor } } },
-          tooltip: { container: { background: resolved === 'dark' ? '#1a1a1a' : '#fff', color: textColor } },
-        }}
+        theme={theme}
         tooltip={({ cell }) => (
-          <div className="bg-popover text-popover-foreground p-2 rounded-md shadow border border-border text-sm" dir="rtl">
+          <div className="text-sm" dir="rtl">
             <strong>{cell.serieId}</strong> | {cell.data.x}
             <br />
             {cell.value != null ? `${cell.formattedValue}%` : 'אין נתונים'}
