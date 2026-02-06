@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { formatNumber, formatPercent } from './NumberDisplay'
+import { formatNumber, formatFullNumber, formatPercent } from './NumberDisplay'
 
 interface StatCardProps {
   title: string
@@ -39,7 +39,10 @@ export function StatCard({ title, value, type = 'number', sparklineData, classNa
   return (
     <div className={cn('card-base flex flex-col', className)}>
       <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{title}</span>
-      <span className="text-2xl font-bold mt-1.5 tracking-tight">
+      <span
+        className="text-2xl font-bold mt-1.5 tracking-tight"
+        title={type === 'percent' ? formatPercent(value) : formatFullNumber(value)}
+      >
         {type === 'percent' ? formatPercent(value) : formatNumber(value)}
       </span>
       {sparklineData && <MiniSparkline data={sparklineData} />}

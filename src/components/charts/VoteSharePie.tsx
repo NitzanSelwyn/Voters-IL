@@ -62,6 +62,7 @@ export function VoteSharePie({ partyTotals, totalValid, roundId }: VoteSharePieP
         arcLinkLabelsTextColor={textColor}
         arcLinkLabelsColor={{ from: 'color' }}
         arcLinkLabelsSkipAngle={10}
+        arcLabel={d => formatNumber(d.value)}
         arcLabelsSkipAngle={10}
         arcLabelsTextColor="#ffffff"
         onClick={(datum) => {
@@ -73,19 +74,15 @@ export function VoteSharePie({ partyTotals, totalValid, roundId }: VoteSharePieP
           text: { fontFamily: 'Noto Sans Hebrew', fontSize: 12 },
           tooltip: {
             container: {
-              background: resolved === 'dark' ? '#162032' : '#ffffff',
-              color: textColor,
-              borderRadius: '8px',
-              boxShadow: resolved === 'dark'
-                ? '0 8px 24px rgba(0,0,0,0.3)'
-                : '0 8px 24px rgba(15,23,42,0.1)',
-              border: `1px solid ${resolved === 'dark' ? '#1e3050' : '#e2e8f0'}`,
-              padding: '8px 12px',
+              background: 'transparent',
+              boxShadow: 'none',
+              border: 'none',
+              padding: 0,
             },
           },
         }}
         tooltip={({ datum }) => (
-          <div className="text-sm" dir="rtl">
+          <div className="bg-popover text-popover-foreground p-2 rounded-lg shadow-lg border border-border text-sm" dir="rtl">
             <strong>{datum.label}</strong>
             <br />
             {formatNumber(datum.value)} קולות ({((datum.value / totalValid) * 100).toFixed(1)}%)
