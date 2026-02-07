@@ -10,8 +10,14 @@ const navItems = [
   { path: '/', label: 'סקירה ארצית' },
   { path: '/compare', label: 'השוואה' },
   { path: '/map', label: 'מפה' },
+  { path: '/party', label: 'מפלגות' },
   { path: '/search', label: 'חיפוש' },
 ]
+
+function isNavActive(pathname: string, itemPath: string) {
+  if (itemPath === '/') return pathname === '/'
+  return pathname === itemPath || pathname.startsWith(itemPath + '/')
+}
 
 export function Header() {
   const { mode, toggle } = useThemeContext()
@@ -44,7 +50,7 @@ export function Header() {
                   to={item.path}
                   className={cn(
                     'px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200',
-                    location.pathname === item.path
+                    isNavActive(location.pathname, item.path)
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                   )}
@@ -92,7 +98,7 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className={cn(
                 'block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                location.pathname === item.path
+                isNavActive(location.pathname, item.path)
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:text-foreground hover:bg-accent'
               )}

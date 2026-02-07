@@ -46,6 +46,15 @@ export default function PartyView() {
     return map
   }, [allRounds])
 
+  const disabledRounds = useMemo(() => {
+    if (!partyId) return new Set<number>()
+    return new Set(
+      allRounds
+        .filter(rd => !aggMap.get(rd.roundId)?.partyTotals[partyId])
+        .map(rd => rd.roundId)
+    )
+  }, [partyId, allRounds, aggMap])
+
   const topCitiesData = useMemo(() => {
     if (!partyId || !allRounds.length || !meta) return []
     const rd = allRounds.find(r => r.roundId === selectedRound)
@@ -89,18 +98,9 @@ export default function PartyView() {
 
   if (metaLoading) return <ChartSkeleton />
 
-  if (!party) {
-    return (
-      <div className="space-y-6 sm:space-y-8">
-        <div>
-          <h1 className="page-title">מעקב מפלגה</h1>
-          <p className="text-sm text-muted-foreground mt-1">בחרו מפלגה לצפייה בנתונים</p>
-        </div>
-        <PartySelector
-          onSelect={(letter) => navigate(`/party/${letter}`)}
-        />
-      </div>
-    )
+  if (!party && !metaLoading) {
+    navigate('/party', { replace: true })
+    return null
   }
 
   return (
@@ -146,7 +146,11 @@ export default function PartyView() {
           <div className="card-base">
             <div className="flex items-center justify-between mb-3">
               <h2 className="section-title">ערים מובילות</h2>
-              <RoundSelector selected={selectedRound} onChange={setSelectedRound} />
+              <RoundSelector
+                selected={selectedRound}
+                onChange={setSelectedRound}
+                disabledRounds={disabledRounds}
+              />
             </div>
             <div style={{ direction: 'ltr' }} className="h-[400px]">
               <ResponsiveBar

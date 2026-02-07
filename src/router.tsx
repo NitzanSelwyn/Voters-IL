@@ -4,6 +4,7 @@ import App from './App'
 
 const NationalDashboard = lazy(() => import('./features/national/NationalDashboard'))
 const CityView = lazy(() => import('./features/city/CityView'))
+const PartyIndex = lazy(() => import('./features/party/PartyIndex'))
 const PartyView = lazy(() => import('./features/party/PartyView'))
 const CompareView = lazy(() => import('./features/compare/CompareView'))
 const MapView = lazy(() => import('./features/map/MapView'))
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <LazyWrapper><NationalDashboard /></LazyWrapper> },
       { path: 'city/:cityCode', element: <LazyWrapper><CityView /></LazyWrapper> },
+      { path: 'party', element: <LazyWrapper><PartyIndex /></LazyWrapper> },
       { path: 'party/:partyId', element: <LazyWrapper><PartyView /></LazyWrapper> },
       { path: 'compare', element: <LazyWrapper><CompareView /></LazyWrapper> },
       { path: 'map', element: <LazyWrapper><MapView /></LazyWrapper> },

@@ -35,7 +35,7 @@ export function CityHeatmap({ data }: CityHeatmapProps) {
         labelTextColor={{ from: 'color', modifiers: [['darker', 3]] }}
         theme={theme}
         tooltip={({ cell }) => (
-          <div className="text-sm" dir="rtl">
+          <div className="bg-popover text-popover-foreground border border-border rounded-lg shadow-lg p-2 text-sm" dir="rtl">
             <strong>{cell.serieId}</strong> | {cell.data.x}
             <br />
             {cell.value != null ? `${cell.formattedValue}%` : 'אין נתונים'}
