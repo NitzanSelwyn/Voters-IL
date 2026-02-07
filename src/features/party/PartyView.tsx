@@ -103,6 +103,8 @@ export default function PartyView() {
     return null
   }
 
+  if (!party) return null
+
   return (
     <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

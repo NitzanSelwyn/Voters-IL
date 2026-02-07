@@ -37,7 +37,7 @@ export function SeatsTimeline({ allRounds }: SeatsTimelineProps) {
       .map(([letter]) => letter)
 
     const barData = rounds.map(rd => {
-      const row: Record<string, unknown> = { round: `כ-${rd.roundId}` }
+      const row: Record<string, string | number> = { round: `כ-${rd.roundId}` }
       for (const letter of sortedKeys) {
         const seats = meta.parties[letter]?.seats[rd.roundId] || 0
         if (seats > 0) row[letter] = seats
