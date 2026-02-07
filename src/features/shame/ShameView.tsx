@@ -8,7 +8,7 @@ import { ResponsiveBar } from '@nivo/bar'
 import { useThemeContext } from '@/components/layout/ThemeProvider'
 import { getChartTheme } from '@/lib/chartTheme'
 import { getPartyName } from '@/lib/utils'
-import { formatPercent } from '@/components/shared/NumberDisplay'
+import { formatPercent, formatFullNumber } from '@/components/shared/NumberDisplay'
 
 const BOTTOM_COUNT = 20
 const BREAKDOWN_COUNT = 10
@@ -45,6 +45,8 @@ export default function ShameView() {
     return sortedCities.map(c => ({
       name: c.cityName,
       turnout: Number(c.turnout.toFixed(1)),
+      eligibleVoters: c.eligibleVoters,
+      totalVotes: c.totalVotes,
     }))
   }, [sortedCities])
 
@@ -110,6 +112,8 @@ export default function ShameView() {
         winnerColor: partyMeta?.color || '#888',
         winnerPct: city.validVotes > 0 ? (maxVotes / city.validVotes) * 100 : 0,
         turnout: city.turnout,
+        eligibleVoters: city.eligibleVoters,
+        totalVotes: city.totalVotes,
       }
     })
   }, [sortedCities, meta, selectedRound])
@@ -182,6 +186,19 @@ export default function ShameView() {
                 labelTextColor="#ffffff"
                 theme={theme}
                 valueScale={{ type: 'linear', max: 100 }}
+                tooltip={({ data }) => (
+                  <div style={theme.tooltip?.container}>
+                    <strong>{data.name}</strong>
+                    <div style={{ marginTop: 4, display: 'grid', gridTemplateColumns: 'auto auto', gap: '2px 12px' }}>
+                      <span style={{ color: '#94a3b8' }}>הצבעה:</span>
+                      <span>{data.turnout}%</span>
+                      <span style={{ color: '#94a3b8' }}>בעלי זכות:</span>
+                      <span>{formatFullNumber(data.eligibleVoters)}</span>
+                      <span style={{ color: '#94a3b8' }}>הצביעו:</span>
+                      <span>{formatFullNumber(data.totalVotes)}</span>
+                    </div>
+                  </div>
+                )}
               />
             </div>
           </div>
@@ -235,15 +252,20 @@ export default function ShameView() {
                 <thead>
                   <tr className="border-b border-border">
                     <th className="text-start py-2 px-3 font-medium text-muted-foreground">יישוב</th>
+                    <th className="text-start py-2 px-3 font-medium text-muted-foreground">בעלי זכות</th>
+                    <th className="text-start py-2 px-3 font-medium text-muted-foreground">הצביעו</th>
+                    <th className="text-start py-2 px-3 font-medium text-muted-foreground">% הצבעה</th>
                     <th className="text-start py-2 px-3 font-medium text-muted-foreground">מפלגה מובילה</th>
                     <th className="text-start py-2 px-3 font-medium text-muted-foreground">% מהקולות</th>
-                    <th className="text-start py-2 px-3 font-medium text-muted-foreground">% הצבעה</th>
                   </tr>
                 </thead>
                 <tbody>
                   {winnerTable.map((row, i) => (
                     <tr key={i} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
                       <td className="py-2 px-3 font-medium">{row.cityName}</td>
+                      <td className="py-2 px-3 tabular-nums">{formatFullNumber(row.eligibleVoters)}</td>
+                      <td className="py-2 px-3 tabular-nums">{formatFullNumber(row.totalVotes)}</td>
+                      <td className="py-2 px-3 tabular-nums">{formatPercent(row.turnout)}</td>
                       <td className="py-2 px-3">
                         <span className="inline-flex items-center gap-2">
                           <span
@@ -253,8 +275,7 @@ export default function ShameView() {
                           {row.winnerName}
                         </span>
                       </td>
-                      <td className="py-2 px-3">{formatPercent(row.winnerPct)}</td>
-                      <td className="py-2 px-3">{formatPercent(row.turnout)}</td>
+                      <td className="py-2 px-3 tabular-nums">{formatPercent(row.winnerPct)}</td>
                     </tr>
                   ))}
                 </tbody>
