@@ -11,6 +11,7 @@ const navItems = [
   { path: '/compare', label: 'השוואה' },
   { path: '/map', label: 'מפה' },
   { path: '/party', label: 'מפלגות' },
+  { path: '/shame', label: 'קיר הבושה' },
   { path: '/search', label: 'חיפוש' },
 ]
 

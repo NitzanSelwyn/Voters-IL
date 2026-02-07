@@ -9,6 +9,7 @@ const PartyView = lazy(() => import('./features/party/PartyView'))
 const CompareView = lazy(() => import('./features/compare/CompareView'))
 const MapView = lazy(() => import('./features/map/MapView'))
 const SearchPage = lazy(() => import('./features/search/SearchPage'))
+const ShameView = lazy(() => import('./features/shame/ShameView'))
 
 function LazyWrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -34,6 +35,7 @@ export const router = createBrowserRouter([
       { path: 'compare', element: <LazyWrapper><CompareView /></LazyWrapper> },
       { path: 'map', element: <LazyWrapper><MapView /></LazyWrapper> },
       { path: 'search', element: <LazyWrapper><SearchPage /></LazyWrapper> },
+      { path: 'shame', element: <LazyWrapper><ShameView /></LazyWrapper> },
     ],
   },
 ])
