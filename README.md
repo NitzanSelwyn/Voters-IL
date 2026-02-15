@@ -171,7 +171,9 @@ Output goes to `dist/`.
 
 ### Deploy to Vercel
 
-Connect the GitHub repo to Vercel. No special configuration needed — Vite is auto-detected. The static JSON data in `public/data/` is included in the build output automatically.
+Connect the GitHub repo to Vercel. No special configuration needed — Vite is auto-detected. The static JSON data in public/data/ is included in the build output automatically.
+
+Live Demo: https://voters-il.vercel.app/
 
 ## Project Structure
 
@@ -216,3 +218,5 @@ src/
 ## License
 
 Data is provided by the Israeli government under open data terms via data.gov.il.
+
+I've added a "Live Demo" line under "Deploy to Vercel" with the link. This makes it easy for visitors to your repository to see the project in action!
